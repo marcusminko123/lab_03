@@ -94,20 +94,111 @@ glimpse(nobel_living)
     ## $ city_original         <chr> "Princeton NJ", "New York NY", "Providence RI", …
     ## $ country_original      <chr> "USA", "USA", "USA", "USA", "USA", "United Kingd…
 
+``` r
+nobel_living <- nobel_living %>%
+  mutate(
+    country_us = if_else(country == "USA", "USA", "Other")
+  )
+
+# nobel living science dataframe
+
+nobel_living_science <- nobel_living %>%
+  filter(category %in% c("Physics", "Medicine", "Chemistry", "Economics"))
+```
+
 ### Exercise 3
 
-Remove this text, and add your answer for Exercise 1 here. Add code
-chunks as needed. Don’t forget to label your code chunk. Do not use
-spaces in code chunk labels.
+``` r
+ggplot(data = nobel_living_science, 
+      mapping = aes(x = country_us,
+                    color = country_us, fill = country_us)) +
+    geom_bar() +
+    coord_flip() +
+    facet_wrap(~ category) +
+  labs(title = "USA vs. non-USA Laureates by Discipline", 
+       x = "Country",
+       y = "# of nobel winners") 
+```
+
+![](lab-03_files/figure-gfm/data-viz-1.png)<!-- --> Yes, there are more
+winners from USA than other countries. …
 
 ### Exercise 4
 
-…
+``` r
+nobel_living_science <- nobel_living_science %>%
+  mutate(
+    born_country_us = if_else(born_country == "USA", "USA", "Other")
+  ) 
+nobel_living_science %>%
+  filter(born_country_us == "USA")
+```
+
+    ## # A tibble: 105 x 28
+    ##       id firstname  surname  year category affiliation  city  country born_date 
+    ##    <dbl> <chr>      <chr>   <dbl> <chr>    <chr>        <chr> <chr>   <date>    
+    ##  1    95 Leon N.    Cooper   1972 Physics  Brown Unive… Prov… USA     1930-02-28
+    ##  2   103 Ben R.     Mottel…  1975 Physics  Nordita      Cope… Denmark 1926-07-09
+    ##  3   106 Samuel C.… Ting     1976 Physics  Massachuset… Camb… USA     1936-01-27
+    ##  4   107 Philip W.  Anders…  1977 Physics  Bell Teleph… Murr… USA     1923-12-13
+    ##  5   112 Robert Wo… Wilson   1978 Physics  Bell Labora… Holm… USA     1936-01-10
+    ##  6   113 Sheldon    Glashow  1979 Physics  Harvard Uni… Camb… USA     1932-12-05
+    ##  7   115 Steven     Weinbe…  1979 Physics  Harvard Uni… Camb… USA     1933-05-03
+    ##  8   138 Jerome I.  Friedm…  1990 Physics  Massachuset… Camb… USA     1930-03-28
+    ##  9   143 Russell A. Hulse    1993 Physics  Princeton U… Prin… USA     1950-11-28
+    ## 10   144 Joseph H.  Taylor…  1993 Physics  Princeton U… Prin… USA     1941-03-29
+    ## # … with 95 more rows, and 19 more variables: died_date <date>, gender <chr>,
+    ## #   born_city <chr>, born_country <chr>, born_country_code <chr>,
+    ## #   died_city <chr>, died_country <chr>, died_country_code <chr>,
+    ## #   overall_motivation <chr>, share <dbl>, motivation <chr>,
+    ## #   born_country_original <chr>, born_city_original <chr>,
+    ## #   died_country_original <chr>, died_city_original <chr>, city_original <chr>,
+    ## #   country_original <chr>, country_us <chr>, born_country_us <chr>
+
+105 of the winners are USA born. …
 
 ### Exercise 5
 
-…
+``` r
+ggplot(data = nobel_living_science, 
+      mapping = aes(x = country_us,
+                    fill = born_country_us)) +
+    geom_bar() +
+    coord_flip() +
+    facet_wrap(~ category) +
+  labs(title = "USA vs. non-USA Laureates by Disicipline", 
+       x = "Living in US or other",
+       y = "# of nobel winners") 
+```
+
+![](lab-03_files/figure-gfm/plot-country-born-1.png)<!-- -->
+
+A substantial majority of the USA nobel winners were born in the USA and
+thus did not themselves immigrate. …
 
 ### Exercise 6
 
-…
+``` r
+nobel_living_science %>%
+  filter(country == "USA" & born_country_us == "Other") %>%
+  count(born_country) %>%
+  arrange(desc(n))
+```
+
+    ## # A tibble: 21 x 2
+    ##    born_country       n
+    ##    <chr>          <int>
+    ##  1 Germany            7
+    ##  2 United Kingdom     7
+    ##  3 China              5
+    ##  4 Canada             4
+    ##  5 Japan              3
+    ##  6 Australia          2
+    ##  7 Israel             2
+    ##  8 Norway             2
+    ##  9 Austria            1
+    ## 10 Finland            1
+    ## # … with 11 more rows
+
+UK and Germany are tied for the most common USA nobel winners born
+elsewhere. …

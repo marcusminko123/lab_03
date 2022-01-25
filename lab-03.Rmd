@@ -34,21 +34,75 @@ nobel_living <- nobel %>%
 
 glimpse(nobel_living)
 ```
-### Exercise 3
 
-Remove this text, and add your answer for Exercise 1 here.
-Add code chunks as needed.
-Don't forget to label your code chunk.
-Do not use spaces in code chunk labels.
+
+```{r mutate-usa}
+nobel_living <- nobel_living %>%
+  mutate(
+    country_us = if_else(country == "USA", "USA", "Other")
+  )
+
+# nobel living science dataframe
+
+nobel_living_science <- nobel_living %>%
+  filter(category %in% c("Physics", "Medicine", "Chemistry", "Economics"))
+
+```
+
+### Exercise 3
+```{r data-viz}
+ggplot(data = nobel_living_science, 
+      mapping = aes(x = country_us,
+                    color = country_us, fill = country_us)) +
+    geom_bar() +
+    coord_flip() +
+    facet_wrap(~ category) +
+  labs(title = "USA vs. non-USA Laureates by Discipline", 
+       x = "Country",
+       y = "# of nobel winners") 
+  
+```
+Yes, there are more winners from USA than other countries.
+...
 
 ### Exercise 4
 
+```{r mutate-USA-born}
+nobel_living_science <- nobel_living_science %>%
+  mutate(
+    born_country_us = if_else(born_country == "USA", "USA", "Other")
+  ) 
+nobel_living_science %>%
+  filter(born_country_us == "USA")
+```
+
+105 of the winners are USA born.
 ...
 
 ### Exercise 5
 
+```{r plot-country-born}
+ggplot(data = nobel_living_science, 
+      mapping = aes(x = country_us,
+                    fill = born_country_us)) +
+    geom_bar() +
+    coord_flip() +
+    facet_wrap(~ category) +
+  labs(title = "USA vs. non-USA Laureates by Disicipline", 
+       x = "Living in US or other",
+       y = "# of nobel winners") 
+```
+
+A substantial majority of the USA nobel winners were born in the USA and thus did not themselves immigrate.
 ...
 
 ### Exercise 6
 
+```{r frequency-other-usa}
+nobel_living_science %>%
+  filter(country == "USA" & born_country_us == "Other") %>%
+  count(born_country) %>%
+  arrange(desc(n))
+```
+UK and Germany are tied for the most common USA nobel winners born elsewhere.
 ...
