@@ -1,7 +1,7 @@
 Lab 03 - Nobel laureates
 ================
-Insert your name here
-Insert date here
+Marcus Minko
+01-25-2022
 
 ### Load packages and data
 
